@@ -1,0 +1,14 @@
+body {
+  margin: 0;
+  min-width: 320px;
+  background: #f8faf8;
+  color: #26352f;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  color: #315d43;
+  background: #dcecdf;
+}
