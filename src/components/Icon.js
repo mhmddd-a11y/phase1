@@ -1,7 +1,7 @@
 import React from 'react';
 
 function Icon({ children, tone = 'mint' }) {
-  return <span className={`metric-icon ${tone}`} aria-hidden="true">{children}</span>;
+  return <div className={`metric-icon ${tone}`} aria-hidden="true">{children}</div>;
 }
 
 export default Icon;

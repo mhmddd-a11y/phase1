@@ -9,7 +9,7 @@ function FeaturesPage() {
     { icon: '◒', tone: 'peach', title: 'Mindful meals', text: 'Note meals and small details that help you pay attention to your routine.' },
     { icon: '▤', tone: 'mint', title: 'Daily overview', text: 'See recent entries and progress in a single, responsive dashboard.' },
   ];
-  return <><PageIntro eyebrow="SIMPLE TOOLS, THOUGHTFULLY MADE" title="A routine that fits real life." description="HealthTrack brings a few useful wellness habits into one calm, easy-to-use space." /><div className="feature-grid">{features.map((feature) => <article className="panel feature-card" key={feature.title}><Icon tone={feature.tone}>{feature.icon}</Icon><h2>{feature.title}</h2><p>{feature.text}</p></article>)}</div><p className="disclaimer">Your entries are stored in local browser storage on this device. This demo does not create accounts or sync data.</p></>;
+  return <div className="page-view"><PageIntro title="A routine that fits real life." description="Tools for your daily wellness." /><div className="feature-grid">{features.map((feature) => <article className="panel feature-card" key={feature.title}><Icon tone={feature.tone}>{feature.icon}</Icon><h2>{feature.title}</h2><p>{feature.text}</p></article>)}</div></div>;
 }
 
 export default FeaturesPage;

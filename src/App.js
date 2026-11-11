@@ -18,14 +18,8 @@ const initialData = {
 };
 
 function readSavedData() {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved) return initialData;
-    const parsed = JSON.parse(saved);
-    return { water: parsed.water || 0, entries: parsed.entries || [] };
-  } catch {
-    return initialData;
-  }
+  const saved = localStorage.getItem(STORAGE_KEY);
+  return saved ? JSON.parse(saved) : initialData;
 }
 
 function getNextId(entries) {
@@ -79,8 +73,7 @@ function App() {
     setNotice('250 ml added to your water total.');
   };
 
-  const pageNames = { home: 'Overview', log: 'Daily log', features: 'Features', about: 'About HealthTrack', contact: 'Contact' };
-  const currentPage = pageNames[page] ? page : 'home';
+  const currentPage = ['home', 'log', 'features', 'about', 'contact'].includes(page) ? page : 'home';
   const pages = {
     home: <OverviewPage data={data} goTo={goTo} addWater={addWater} />,
     log: <DailyLogPage data={data} onAddEntry={addEntry} addWater={addWater} notice={notice} />,
@@ -89,7 +82,7 @@ function App() {
     contact: <ContactPage />,
   };
 
-  return <AppLayout page={currentPage} pageName={pageNames[currentPage]} goTo={goTo} menuOpen={menuOpen} setMenuOpen={setMenuOpen}>
+  return <AppLayout page={currentPage} goTo={goTo} menuOpen={menuOpen} setMenuOpen={setMenuOpen}>
     {notice && currentPage !== 'log' && <div className="form-notice" role="status">✓ {notice}</div>}
     {pages[currentPage]}
   </AppLayout>;
