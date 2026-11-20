@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 
 const entryTypes = {
-  movement: { label: 'Movement', icon: '↗' },
-  meal: { label: 'Meal', icon: '◒' },
-  water: { label: 'Water', icon: '◉' },
-  mood: { label: 'Mood & mindfulness', icon: '☺' },
+  movement: { label: 'Movement', icon: '🏃' },
+  meal: { label: 'Meal', icon: '🍽️' },
+  water: { label: 'Water', icon: '💧' },
+  mood: { label: 'Mood & mindfulness', icon: '🧘' },
 };
 
 function EntryRow({ entry, onDelete, onSave }) {
@@ -28,7 +28,7 @@ function EntryRow({ entry, onDelete, onSave }) {
         <button type="button" className="entry-action" aria-label="Cancel editing" onClick={() => setEditing(false)}>×</button>
       </div>
     </form> : <div className="entry-copy"><strong>{entry.title}</strong><div>{category.label}{entry.detail ? ` · ${entry.detail}` : ''}</div></div>}
-    {!editing && <div className="entry-time"><span aria-hidden="true">◷</span>{entry.time || 'Just added'}</div>}
+    {!editing && <div className="entry-time"><div aria-hidden="true">◷</div>{entry.time || 'Just added'}</div>}
     {!editing && (onDelete || onSave) && <div className="entry-actions">
       {onSave && <button type="button" className="entry-action" aria-label={`Edit ${entry.title}`} onClick={() => { setDraft({ title: entry.title, detail: entry.detail }); setEditing(true); }}>✎</button>}
       {onDelete && <button type="button" className="entry-action entry-action-delete" aria-label={`Delete ${entry.title}`} onClick={() => onDelete(entry.id)}>⌫</button>}

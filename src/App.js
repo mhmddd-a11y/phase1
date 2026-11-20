@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import './App.css';
 import AppLayout from './components/AppLayout';
 import OverviewPage from './pages/OverviewPage';
@@ -30,18 +31,20 @@ function getNextId(entries) {
   return largestId + 1;
 }
 
-function App() {
+function AppContent() {
   const [data, setData] = useState(readSavedData());
-  const [page, setPage] = useState('home');
   const [menuOpen, setMenuOpen] = useState(false);
   const [notice, setNotice] = useState('');
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   }, [data]);
 
   const goTo = (nextPage) => {
-    setPage(nextPage);
+    const paths = { home: '/', log: '/log', features: '/features', about: '/about', contact: '/contact' };
+    navigate(paths[nextPage] || '/');
     setMenuOpen(false);
     setNotice('');
   };
@@ -92,19 +95,23 @@ function App() {
     }));
   };
 
-  const currentPage = ['home', 'log', 'features', 'about', 'contact'].includes(page) ? page : 'home';
-  const pages = {
-    home: <OverviewPage data={data} goTo={goTo} addWater={addWater} />,
-    log: <DailyLogPage data={data} onAddEntry={addEntry} addWater={addWater} onDeleteEntry={deleteEntry} onUpdateEntry={updateEntry} notice={notice} />,
-    features: <FeaturesPage />,
-    about: <AboutPage />,
-    contact: <ContactPage />,
-  };
+  const currentPage = location.pathname === '/' ? 'home' : location.pathname.slice(1);
 
   return <AppLayout page={currentPage} goTo={goTo} menuOpen={menuOpen} setMenuOpen={setMenuOpen}>
     {notice && currentPage !== 'log' && <div className="form-notice" role="status">✓ {notice}</div>}
-    {pages[currentPage]}
+    <Routes>
+      <Route path="/" element={<OverviewPage data={data} goTo={goTo} addWater={addWater} />} />
+      <Route path="/log" element={<DailyLogPage data={data} onAddEntry={addEntry} addWater={addWater} onDeleteEntry={deleteEntry} onUpdateEntry={updateEntry} notice={notice} />} />
+      <Route path="/features" element={<FeaturesPage />} />
+      <Route path="/about" element={<AboutPage />} />
+      <Route path="/contact" element={<ContactPage />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   </AppLayout>;
+}
+
+function App() {
+  return <BrowserRouter><AppContent /></BrowserRouter>;
 }
 
 export default App;
