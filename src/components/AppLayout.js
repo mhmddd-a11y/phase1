@@ -2,11 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from './Navbar';
 
-function AppLayout({ children, page, goTo, menuOpen, setMenuOpen }) {
+function AppLayout({ children, goTo }) {
   return <div className="app-shell">
-    {menuOpen && <button className="mobile-backdrop" aria-label="Close navigation" onClick={() => setMenuOpen(false)} />}
-    <div className={`sidebar ${menuOpen ? 'sidebar-open' : ''}`}>
-      <Link className="brand" to="/" onClick={() => setMenuOpen(false)} aria-label="HealthTrack home">
+    <div className="sidebar">
+      <Link className="brand" to="/" aria-label="HealthTrack home">
         <div className="brand-mark" aria-hidden="true">✚</div>
         <div className="brand-copy">
           <div className="brand-name">health<div className="brand-light">track</div></div>

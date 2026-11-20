@@ -9,18 +9,29 @@ import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 
 const STORAGE_KEY = 'healthtrack-data-v1';
+const WATER_GLASS_ML = 250;
 const initialData = {
   water: 1250,
   entries: [
     { id: 1, type: 'movement', title: 'Morning walk', detail: 'A refreshing walk around the neighborhood' },
     { id: 2, type: 'meal', title: 'Breakfast', detail: 'Oatmeal, banana and a cup of tea' },
-    { id: 3, type: 'water', title: 'Water break', detail: 'A glass of water' },
+    { id: 3, type: 'water', title: 'Water break', detail: 'A glass of water', waterMl: WATER_GLASS_ML },
   ],
 };
 
 function readSavedData() {
   const saved = localStorage.getItem(STORAGE_KEY);
-  return saved ? JSON.parse(saved) : initialData;
+  if (!saved) return initialData;
+
+  const data = JSON.parse(saved);
+  return {
+    ...data,
+    entries: data.entries.map((entry) => (
+      entry.type === 'water' && !entry.waterMl
+        ? { ...entry, waterMl: WATER_GLASS_ML }
+        : entry
+    )),
+  };
 }
 
 function getNextId(entries) {
@@ -32,8 +43,7 @@ function getNextId(entries) {
 }
 
 function AppContent() {
-  const [data, setData] = useState(readSavedData());
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [data, setData] = useState(readSavedData);
   const [notice, setNotice] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
@@ -45,30 +55,36 @@ function AppContent() {
   const goTo = (nextPage) => {
     const paths = { home: '/', log: '/log', features: '/features', about: '/about', contact: '/contact' };
     navigate(paths[nextPage] || '/');
-    setMenuOpen(false);
     setNotice('');
   };
 
   const addEntry = (event, form) => {
     event.preventDefault();
-    if (!form.title) return;
+    const title = form.title.trim();
+    if (!title) return false;
     const defaultDetails = {
       movement: 'Movement session',
       meal: 'Daily meal',
-      water: 'A glass of water',
+      water: `A glass of water · ${WATER_GLASS_ML} ml`,
       mood: 'Mindfulness moment',
     };
+    const waterMl = form.type === 'water' ? WATER_GLASS_ML : 0;
     const entry = {
       type: form.type,
-      title: form.title,
-      detail: form.detail || defaultDetails[form.type],
+      title,
+      detail: form.detail.trim() || defaultDetails[form.type],
+      ...(waterMl ? { waterMl } : {}),
       time: new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
     };
     setData((current) => {
       const nextEntry = { ...entry, id: getNextId(current.entries) };
-      return { ...current, entries: [nextEntry, ...current.entries] };
+      return {
+        ...current,
+        water: current.water + waterMl,
+        entries: [nextEntry, ...current.entries],
+      };
     });
-    setNotice('Your entry has been added to today’s log.');
+    setNotice(waterMl ? `${WATER_GLASS_ML} ml added to your water total.` : 'Your entry has been added to today’s log.');
     return true;
   };
 
@@ -77,15 +93,24 @@ function AppContent() {
       const entry = {
         id: getNextId(current.entries),
         type: 'water', title: 'Water break', detail: 'A glass of water',
+        waterMl: WATER_GLASS_ML,
         time: new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
       };
-      return { ...current, water: current.water + 250, entries: [entry, ...current.entries] };
+      return { ...current, water: current.water + WATER_GLASS_ML, entries: [entry, ...current.entries] };
     });
-    setNotice('250 ml added to your water total.');
+    setNotice(`${WATER_GLASS_ML} ml added to your water total.`);
   };
 
   const deleteEntry = (entryId) => {
-    setData((current) => ({ ...current, entries: current.entries.filter((entry) => entry.id !== entryId) }));
+    setData((current) => {
+      const deletedEntry = current.entries.find((entry) => entry.id === entryId);
+      const waterToRemove = deletedEntry ? deletedEntry.waterMl || 0 : 0;
+      return {
+        ...current,
+        water: Math.max(0, current.water - waterToRemove),
+        entries: current.entries.filter((entry) => entry.id !== entryId),
+      };
+    });
   };
 
   const updateEntry = (entryId, changes) => {
@@ -97,7 +122,7 @@ function AppContent() {
 
   const currentPage = location.pathname === '/' ? 'home' : location.pathname.slice(1);
 
-  return <AppLayout page={currentPage} goTo={goTo} menuOpen={menuOpen} setMenuOpen={setMenuOpen}>
+  return <AppLayout goTo={goTo}>
     {notice && currentPage !== 'log' && <div className="form-notice" role="status">✓ {notice}</div>}
     <Routes>
       <Route path="/" element={<OverviewPage data={data} goTo={goTo} addWater={addWater} />} />

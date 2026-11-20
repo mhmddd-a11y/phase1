@@ -1,14 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 function Navbar() {
   return (
     <nav className="side-nav" aria-label="Main navigation">
-      <Link className="nav-link" to="/">Home</Link>
-      <Link className="nav-link" to="/log">Log</Link>
-      <Link className="nav-link" to="/features">Features</Link>
-      <Link className="nav-link" to="/about">About</Link>
-      <Link className="nav-link" to="/contact">Contact</Link>
+      <NavLink className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`} to="/" end>Today</NavLink>
+      <NavLink className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`} to="/log">Log</NavLink>
+      <NavLink className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`} to="/features">Features</NavLink>
+      <NavLink className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`} to="/about">About</NavLink>
+      <NavLink className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`} to="/contact">Contact</NavLink>
     </nav>
   );
 }

@@ -11,9 +11,9 @@ function OverviewPage({ data, goTo, addWater }) {
     <div className="page-view">
       <div className="welcome-row simple-welcome">
         <div>
-          <p className="eyebrow">OVERVIEW</p>
-          <h1>Hello! <strong className="welcome-highlight">Your day at a glance.</strong></h1>
-          <p className="subheading">Your wellness today.</p>
+          <p className="eyebrow">Today</p>
+          <h1>Your day, <strong className="welcome-highlight">in balance.</strong></h1>
+          <p className="subheading">A clear, gentle view of the habits you made room for today.</p>
         </div>
         <button className="button button-primary" onClick={() => goTo('log')}>+ Add new entry</button>
       </div>
@@ -21,7 +21,7 @@ function OverviewPage({ data, goTo, addWater }) {
       <div className="metric-grid simple-metrics">
         <div className="metric-card simple-metric">
           <div className="metric-top"><div className="metric-icon mint" aria-hidden="true">🏃</div><div className="metric-label">MOVEMENT</div></div>
-          <div className="metric-value">{movementCount} <small>sessions</small></div>
+          <div className="metric-value">{movementCount} <small>{movementCount === 1 ? 'session' : 'sessions'}</small></div>
         </div>
         <div className="metric-card simple-metric">
           <div className="metric-top"><div className="metric-icon blue" aria-hidden="true">💧</div><div className="metric-label">WATER</div></div>
